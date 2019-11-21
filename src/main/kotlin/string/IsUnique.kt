@@ -1,7 +1,7 @@
 package string
 
 class IsUnique {
-    fun isUnique(word: String) {
-
+    fun isUnique(word: String): Boolean {
+        return true
     }
 }

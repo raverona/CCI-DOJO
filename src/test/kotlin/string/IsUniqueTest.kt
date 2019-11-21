@@ -1,15 +1,31 @@
 package string
 
 import io.kotlintest.properties.Gen
+import io.kotlintest.properties.assertAll
+import io.kotlintest.properties.forAll
+import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
+import io.kotlintest.specs.ShouldSpec
+import io.kotlintest.specs.StringSpec
 import kotlin.random.Random.Default.nextInt
 
-class IsUniqueTest : FreeSpec() {
+class IsUniqueTest : ShouldSpec() {
     init {
+        should("return true for every string with unique characters") {
+            assertAll(UniqueStringGenerator) { uniqueString: String ->
+                IsUnique().isUnique(uniqueString) shouldBe true
+            }
+        }
+
+        should("return false for every string with non unique characters") {
+            assertAll(NonUniqueStringGenerator) { nonUniqueString: String ->
+                IsUnique().isUnique(nonUniqueString) shouldBe false
+            }
+        }
     }
 }
 
-class UniqueStringGenerator : Gen<String> {
+object UniqueStringGenerator : Gen<String> {
     private fun getNextLatinAlphabetChar(): Char = nextInt(from = 97, until = 123).toChar()
 
     private fun nextLatinAlphabetUniqueString(length: Int): String {
@@ -51,9 +67,9 @@ class UniqueStringGenerator : Gen<String> {
     }
 }
 
-class NonUniqueStringGenerator: Gen<String> {
+object NonUniqueStringGenerator: Gen<String> {
     override fun constants(): Iterable<String> {
-        return listOf("")
+        return emptyList()
     }
 
     override fun random(): Sequence<String> {
