@@ -23,8 +23,6 @@ class IsUniqueTest : ShouldSpec() {
 }
 
 object UniqueStringGenerator : Gen<String> {
-    private fun getNextLatinAlphabetChar(): Char = nextInt(from = 97, until = 123).toChar()
-
     private fun nextLatinAlphabetUniqueString(length: Int): String {
         if (length > 26) throw RuntimeException("It is impossible to build a string of size $length with only unique characters")
 
@@ -64,12 +62,18 @@ object UniqueStringGenerator : Gen<String> {
     }
 }
 
-object NonUniqueStringGenerator: Gen<String> {
+object NonUniqueStringGenerator : Gen<String> {
+    private fun nextLatinAlphabetNonUniqueString(length: Int): String {
+        return (0 until length).map { getNextLatinAlphabetChar() }.joinToString()
+    }
+
     override fun constants(): Iterable<String> {
         return emptyList()
     }
 
     override fun random(): Sequence<String> {
-        return Gen.string(100).random()
+        return generateSequence { nextLatinAlphabetNonUniqueString(nextInt(27, 50)) }
     }
 }
+
+private fun getNextLatinAlphabetChar(): Char = nextInt(from = 97, until = 123).toChar()
