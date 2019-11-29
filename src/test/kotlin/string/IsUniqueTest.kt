@@ -64,7 +64,7 @@ object UniqueStringGenerator : Gen<String> {
 
 object NonUniqueStringGenerator : Gen<String> {
     private fun nextLatinAlphabetNonUniqueString(length: Int): String {
-        return (0 until length).map { getNextLatinAlphabetChar() }.joinToString()
+        return (0 until length).map { getNextLatinAlphabetChar() }.joinToString("")
     }
 
     override fun constants(): Iterable<String> {
