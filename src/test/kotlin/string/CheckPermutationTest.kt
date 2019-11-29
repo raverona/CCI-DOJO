@@ -31,16 +31,18 @@ object PermutedStringsGenerator : Gen<Pair<String, String>> {
     }
 
     override fun random(): Sequence<Pair<String, String>> {
-        return generateSequence { getNextRandomLatinAlphabetString(nextInt(1, 20)).toPairWithPermutation() }
+        return generateSequence { generatePairOfPermutedStrings(::getNextRandomLatinAlphabetString, nextInt(1, 20)) }
     }
 
-    private fun getNextLatinAlphabetChar(): Char = nextInt(from = 97, until = 123).toChar()
-
-    private fun getNextRandomLatinAlphabetString(length: Int): String {
-        return (0..length).map { getNextLatinAlphabetChar() }.joinToString("")
+    private fun generatePairOfPermutedStrings(
+        generateStringFunction: (length: Int) -> String,
+        length: Int
+    ): Pair<String, String> {
+        val randomString = generateStringFunction(length)
+        return randomString.toPairWithPermutedString()
     }
 
-    private fun String.toPairWithPermutation(): Pair<String, String> {
+    private fun String.toPairWithPermutedString(): Pair<String, String> {
         return this to this.permuted()
     }
 
@@ -66,6 +68,46 @@ object DistinctNonPermutedStringsGenerator : Gen<Pair<String, String>> {
     }
 
     override fun random(): Sequence<Pair<String, String>> {
-        TODO("not implemented")
+        return generateSequence {
+            generateDistinctNonPermutedPairOfStrings(
+                ::getNextRandomLatinAlphabetString,
+                ::randomIntFromOneUntilTwenty
+            )
+        }
     }
+
+    private fun randomIntFromOneUntilTwenty(): Int {
+        return nextInt(1, 20)
+    }
+
+    private fun generateDistinctNonPermutedPairOfStrings(
+        generateStringFunction: (length: Int) -> String,
+        length: () -> Int
+    ): Pair<String, String> {
+        val randomString = generateStringFunction(length())
+        return randomString.toPairWithDistinctNonPermutedString(generateStringFunction, length)
+    }
+
+    private fun String.toPairWithDistinctNonPermutedString(
+        generateStringFunction: (length: Int) -> String,
+        length: () -> Int
+    ): Pair<String, String> {
+        return this to this.distinct(generateStringFunction, length)
+    }
+
+    private fun String.distinct(generateStringFunction: (length: Int) -> String, length: () -> Int): String {
+        fun generateDistinctStringFrom(string: String): String {
+            val randomString = generateStringFunction(length())
+            if (string == randomString) return generateDistinctStringFrom(string)
+            return randomString
+        }
+
+        return generateDistinctStringFrom(this)
+    }
+}
+
+private fun getNextLatinAlphabetChar(): Char = nextInt(from = 97, until = 123).toChar()
+
+private fun getNextRandomLatinAlphabetString(length: Int): String {
+    return (0..length).map { getNextLatinAlphabetChar() }.joinToString("")
 }
