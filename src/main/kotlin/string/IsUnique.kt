@@ -2,12 +2,14 @@ package string
 
 class IsUnique {
     fun isUnique(word: String): Boolean {
-        val characters = hashMapOf<Char, Int>()
+        val characters = IntArray(26)
 
         word.forEach { character ->
-            if(characters.containsKey(character))
-                return false
-            characters[character] = 0
+            val charIndex = character - 'a'
+            when (characters[charIndex]) {
+                1 -> return false
+                else -> characters[charIndex] = 1
+            }
         }
 
         return true
