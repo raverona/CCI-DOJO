@@ -5,9 +5,10 @@ class IsUnique {
         val characters = hashMapOf<Char, Int>()
 
         word.forEach { character ->
-            if(characters.containsKey(character))
-                return false
-            characters[character] = 0
+            when (characters.containsKey(character)) {
+                true -> return false
+                else -> characters[character] = 0
+            }
         }
 
         return true
