@@ -29,4 +29,4 @@ class CheckPermutation {
 * Space Complexity: O(n)
 *
 * n = size of 'first' parameter
-* k = size of 'second parameter'*/
+* k = size of 'second' parameter*/
