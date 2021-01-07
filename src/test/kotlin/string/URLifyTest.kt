@@ -12,7 +12,7 @@ class URLifyTest : ShouldSpec() {
             assertAll(RandomStringWithSpacesGenerator) { randomStringWithSpaces: String ->
                 URLify().URLify(
                     randomStringWithSpaces,
-                    randomStringWithSpaces.length
+                    randomStringWithSpaces.trimEnd().length
                 ) shouldBe randomStringWithSpaces.replaceSpacesWithPercentTwenty()
             }
         }
@@ -33,13 +33,13 @@ object RandomStringWithSpacesGenerator : Gen<String> {
     }
 
     private fun generateRandomWordsWithSpaces(numberOfWords: Int): String {
-        return (1..numberOfWords).flatMap { listOf(nextLatinAlphabetString(nextInt(1, 10)), " ") }
-            .joinToString("").trimEnd().addTrailingSpaces(numberOfWords)
+        return (1..numberOfWords).map { nextLatinAlphabetString(nextInt(1, 10)) }
+            .joinToString(" ").addTrailingSpaces(numberOfWords)
     }
 
     private fun String.addTrailingSpaces(numberOfWords: Int): String {
         if (numberOfWords <= 0) return this
-        return this + ((numberOfWords - 1) * " ")
+        return this + ((numberOfWords - 1) * "  ")
     }
 
     operator fun Int.times(string: String): String {
