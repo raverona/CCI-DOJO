@@ -4,7 +4,7 @@ plugins {
     kotlin("jvm") version "1.3.50"
 }
 
-group = "gopags"
+group = "code"
 version = "1.0-SNAPSHOT"
 
 repositories {
